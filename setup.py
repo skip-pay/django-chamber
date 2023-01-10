@@ -5,7 +5,7 @@ from chamber.version import get_version
 
 setup(
     python_requires=">=3.6",
-    name='knj-django-chamber',
+    name='skip-django-chamber',
     version=get_version(),
     description='Utilities library meant as a complement to django-is-core.',
     author='Lubos Matl, Oskar Hollmann',
