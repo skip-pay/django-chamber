@@ -7,7 +7,7 @@ setup(
     python_requires=">=3.6",
     name='skip-django-chamber',
     version=get_version(),
-    description='Utilities library meant as a complement to django-is-core.',
+    description='Utilities library meant as a complement to django-is-core..',
     author='Lubos Matl, Oskar Hollmann',
     author_email='matllubos@gmail.com, oskar@hollmann.me',
     url='http://github.com/skip-pay/django-chamber',
