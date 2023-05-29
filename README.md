@@ -35,6 +35,7 @@ You are welcomed to contribute at https://github.com/druids/django-chamber. Ther
 
 * documentation of this library is a work in progress, needs a lot of attention
 * SmartModel extends the AuditModel and therefore always adds `created_at` and `changed_at` fields to the model which is not always desirable
+* If a problem occurs during `make install` like `Unable to find magic library` try installing libmagic  `brew install libmagic` - [https://filemagic.readthedocs.io/en/latest/guide.html#installation](https://filemagic.readthedocs.io/en/latest/guide.html#installation)
 
 ## License
 

@@ -1,6 +1,7 @@
 from django.db import transaction, models, OperationalError
 from django.db.models.manager import BaseManager
 from django.db.models.base import ModelBase
+from django.db.models.expressions import OrderBy
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from django.utils.functional import cached_property
@@ -51,6 +52,30 @@ class SmartQuerySetMixin:
             return self.order_by(*field_names).last()
         else:
             return super().last()
+
+    def order_by(self, *field_names):
+        """
+        If the field_names does not contain the pk field, it is added.
+        Adding pk (by model) makes ordering deterministic, when column has multiple same values.
+        """
+        pk = self.model._meta.pk.name if self.model else 'pk'
+        unique_fields = {pk, 'pk'}
+        if (
+            not [
+                field for field in field_names if
+                (isinstance(field, str) and field.replace('-', '') in unique_fields)
+                or
+                (hasattr(field, 'expression') and field.expression.name.replace('-', '') in unique_fields)
+            ]
+        ):
+            field_names += (pk,)
+        return super().order_by(*field_names)
+
+    def order_by_without_pk(self, *field_names):
+        """
+        Default Django order_by method without automatic adding of the pk field.
+        """
+        return super().order_by(*field_names)
 
 
 class SmartQuerySet(SmartQuerySetMixin, models.QuerySet):

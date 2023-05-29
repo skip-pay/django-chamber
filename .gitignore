@@ -47,3 +47,7 @@ build/config
 # Virtualenv #
 ##############
 ve/
+
+# pyenv #
+##############
+.python-version

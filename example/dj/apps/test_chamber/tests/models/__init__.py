@@ -1,6 +1,8 @@
 from datetime import timedelta
 
 from django.db import OperationalError
+from django.db.models import F
+from django.db.models.expressions import OrderBy
 from django.core.exceptions import ValidationError
 from django.test import TransactionTestCase
 from django.utils import timezone
@@ -378,6 +380,14 @@ class ModelsTestCase(TransactionTestCase):
             list(TestSmartModel.objects.order_by('-name').fast_distinct().values_list('name', flat=True)),
             ['c', 'b', 'a']
         )
+
+    def test_smart_queryset_order_by_should_add_pk_ordering(self):
+        assert_equal(TestSmartModel.objects.order_by_without_pk().query.order_by, ())
+        assert_equal(TestSmartModel.objects.order_by().query.order_by, ('id',))
+        assert_equal(TestSmartModel.objects.order_by('name').query.order_by, ('name', 'id'))
+        assert_equal(TestSmartModel.objects.order_by('id', 'name').query.order_by, ('id', 'name'))
+        assert_equal(TestSmartModel.objects.order_by(OrderBy(F('name'))).query.order_by, (OrderBy(F('name')), 'id'))
+        assert_equal(TestSmartModel.objects.order_by(OrderBy(F('id'))).query.order_by, (OrderBy(F('id')),))
 
     def test_smart_model_first_and_last_with_order(self):
         test3 = TestSmartModel.objects.create(name='3')

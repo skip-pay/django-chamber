@@ -306,3 +306,12 @@ will assume the custom filters to be there).
     .. method:: last(**field_names)
 
         Method is only shortcut to ``Model.objects.order_by('field_name').last()``. With this method you can use ``Model.objects.last('field_name')``
+
+    .. method:: order_by(**field_names)
+
+        If the field_names does not contain the pk field, it is added.
+        Adding pk (by model) makes ordering deterministic, when column has multiple same values.
+
+    .. method:: order_by_without_pk(**field_names)
+
+        Default Django order_by method without automatic adding of the pk field.
