@@ -1,4 +1,4 @@
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
 from chamber.version import get_version
 
@@ -32,7 +32,7 @@ setup(
         'django>=2.2, <4.0',
         'Unidecode>=1.1.1',
         'pyprind>=2.11.2',
-        'filemagic>=1.6',
+        'python-magic>=0.4.27'
     ],
     extras_require={
         'boto3storage': ['django-storages<2.0', 'boto3'],

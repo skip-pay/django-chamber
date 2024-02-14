@@ -3,8 +3,8 @@ import mimetypes
 import magic  # pylint: disable=E0401
 
 from django.core.exceptions import ValidationError
-from django.utils.translation import ugettext
 from django.template.defaultfilters import filesizeformat
+from django.utils.translation import ugettext
 
 
 class RestrictedFileValidator:
@@ -45,10 +45,9 @@ class AllowedContentTypesByContentFileValidator:
 
     def __call__(self, data):
         data.open()
-        with magic.Magic(flags=magic.MAGIC_MIME_TYPE) as m:
-            mime_type = m.id_buffer(data.read(2048))
-            data.seek(0)
-            if mime_type not in self.content_types:
-                raise ValidationError(ugettext('File content was evaluated as not supported file type'))
+        mime_type = magic.from_buffer(data.read(2048), mime=True)
+        data.seek(0)
+        if mime_type not in self.content_types:
+            raise ValidationError(ugettext('File content was evaluated as not supported file type'))
 
         return data
