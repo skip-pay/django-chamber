@@ -1,3 +1,7 @@
+import logging
+
+from django.core.exceptions import PermissionDenied
+from django.http import HttpResponse
 from django.utils.functional import SimpleLazyObject
 
 from auth_token import utils  # pylint: disable=E0401
@@ -8,6 +12,9 @@ from auth_token.utils import dont_enforce_csrf_checks, header_name_to_django  # 
 
 from chamber.config import settings
 from chamber.shortcuts import get_object_or_none
+
+
+logger = logging.getLogger(__name__)
 
 
 def get_token(request):
@@ -34,3 +41,12 @@ class MultiDomainsTokenAuthenticationMiddleware(TokenAuthenticationMiddleware):
         request.token = get_token(request)
         request.user = SimpleLazyObject(lambda: get_user(request))
         request._dont_enforce_csrf_checks = dont_enforce_csrf_checks(request)  # pylint: disable=W0212
+
+    def __call__(self, request):
+        try:
+            response = super().__call__(request)
+        except PermissionDenied as exp:
+            logger.warning(str(exp))
+            response = HttpResponse("Unauthorized", status=401)
+
+        return response
