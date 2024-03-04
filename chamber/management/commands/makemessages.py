@@ -16,6 +16,7 @@ def _remove_pot_creation_date(pofile):
 
 class Command(makemessages.Command):
     extra_args = [
+        '--keyword=_g',
         '--keyword=_l',
         '--keyword=_n:1,2',
         '--keyword=_nl:1,2',
