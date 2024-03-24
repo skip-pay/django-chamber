@@ -2,7 +2,7 @@ from distutils.version import StrictVersion
 
 import django
 
-from django.conf.urls import url
+from django.urls import re_path as url
 
 from test_chamber import views  # pylint: disable=E0401
 

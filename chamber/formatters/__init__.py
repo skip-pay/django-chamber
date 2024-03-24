@@ -1,5 +1,5 @@
 from django.utils import numberformat
-from django.utils.encoding import force_text
+from django.utils.encoding import force_str
 from django.utils.safestring import mark_safe
 
 
@@ -16,6 +16,6 @@ def natural_number_with_currency(number, currency, show_decimal_place=True, use_
             thousand_sep=' ',
             force_grouping=True
         ),
-        force_text(currency)
+        force_str(currency)
     )
     return mark_safe(humanized.replace(' ', '\u00a0')) if use_nbsp else humanized
