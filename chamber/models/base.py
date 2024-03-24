@@ -2,7 +2,7 @@ from django.db import transaction, models, OperationalError
 from django.db.models.manager import BaseManager
 from django.db.models.base import ModelBase
 from django.core.exceptions import ValidationError
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.utils.functional import cached_property
 
 from chamber.exceptions import PersistenceException
