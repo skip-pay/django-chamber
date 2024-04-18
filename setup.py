@@ -29,7 +29,7 @@ setup(
         'Framework :: Django',
     ],
     install_requires=[
-        'django>=2.2, <4.0',
+        'django>=4.2',
         'Unidecode>=1.1.1',
         'pyprind>=2.11.2',
         'python-magic>=0.4.27'
