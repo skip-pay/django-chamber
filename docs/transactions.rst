@@ -5,9 +5,9 @@ Transaction helpers
 ``chamber.utils.transaction``
 ------------------------------------
 
-.. function:: smart_atomic(using=None, savepoint=True, ignore_errors=None, reversion=True)
+.. function:: smart_atomic(using=None, savepoint=True, ignore_errors=None)
 
-    Like django ``transaction.smart_atomic()`` decorator chamber atomic can be used for surrounding method, function or block of code with db atomic block. But because we often uses reversion the atomic is surrounded with ``create_revision`` decorator. Reversion can be turned off with ``reversion`` argument.
+    Like django ``transaction.smart_atomic()`` decorator chamber atomic can be used for surrounding method, function or block of code with db atomic block.
 
 .. function:: pre_commit(callable, using=None)
 
@@ -44,4 +44,3 @@ Special type of unique handler that is identified with itself and model instance
     .. method:: _get_instance()
 
         Returns instance stored in input kwargs which is refreshed from database to get actual state of the model object
-
