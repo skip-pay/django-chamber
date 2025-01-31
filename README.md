@@ -1,11 +1,6 @@
 # django-chamber
 
-[![Build
-Status](https://travis-ci.org/druids/django-chamber.svg?branch=master)](https://travis-ci.org/druids/django-chamber)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/012d28c820fd4b19a783618c05d7a0a9)](https://www.codacy.com/app/lukas-rychtecky/django-chamber?utm_source=github.com&utm_medium=referral&utm_content=druids/django-chamber&utm_campaign=badger)
-[![Coverage
-Status](https://coveralls.io/repos/github/druids/django-chamber/badge.svg?branch=master)](https://coveralls.io/github/druids/django-chamber?branch=master)
-[![Licence](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
+[![Django CI](https://github.com/skip-pay/django-chamber/actions/workflows/django.yml/badge.svg)](https://github.com/skip-pay/django-chamber/actions/workflows/django.yml)
 
 Chamber contains a collection of useful base model classes, form fields, model fields, decorators, or other shortcuts to aid web development in Django.
 
