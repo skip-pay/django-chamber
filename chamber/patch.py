@@ -1,10 +1,15 @@
 import codecs
+import logging
+import sys
 
 from django.db.models import Model
 from django.db.models.fields import Field
 from django.db.transaction import get_connection, Atomic
 
 from chamber.utils import remove_accent
+
+
+log = logging.getLogger(__name__)
 
 
 class OptionsLazy:
@@ -100,7 +105,12 @@ def atomic_pre_commit_exit(self, exc_type, exc_value, traceback):
             # No exception and no rollback, pre_commit hooks can be performed on top level atomic block exit function
             while connection.run_pre_commit:
                 sids, callable_hash, func = connection.run_pre_commit.pop(0)
-                func()
+                try:
+                    func()
+                except Exception:
+                    log.exception("Raised error during pre_commit")
+                    exc_type, exc_value, traceback = sys.exc_info()
+                    break
     else:
         if connection.savepoint_ids:
             sid = connection.savepoint_ids[-1]

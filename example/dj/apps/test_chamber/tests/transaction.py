@@ -1,9 +1,9 @@
 from django.test import TransactionTestCase
 from django.db import transaction
 
-from django.db.transaction import on_commit
+from django.db.transaction import on_commit, get_connection
 
-from chamber.utils.transaction import UniquePreCommitCallable, in_atomic_block, pre_commit, smart_atomic
+from chamber.utils.transaction import UniquePreCommitCallable, pre_commit, smart_atomic
 
 from test_chamber.models import TestSmartModel
 
@@ -17,6 +17,10 @@ __all__ = (
 
 def add_number(numbers_list, number):
     numbers_list.append(number)
+
+
+def raise_exc():
+    raise Exception()
 
 
 class TransactionsTestCase(TransactionTestCase):
@@ -129,6 +133,23 @@ class TransactionsTestCase(TransactionTestCase):
                 pre_commit(pre_commit_fn_b)
 
         assert_equal(data, ['a', 'b', 'c'])
+
+    def test_transaction_is_properly_closed_if_pre_commit_fails(self):
+        numbers_list = []
+
+        with transaction.atomic():
+            on_commit(lambda: add_number(numbers_list, 2))
+            pre_commit(lambda: raise_exc())
+        assert_equal(numbers_list, [])
+
+        # Check that another transaction is functional
+        with transaction.atomic():
+            connection = get_connection()
+            with connection.cursor() as cursor:
+                cursor.execute("SELECT 1")
+            on_commit(lambda: add_number(numbers_list, 2))
+            pre_commit(lambda: add_number(numbers_list, 1))
+        assert_equal(numbers_list, [1, 2])
 
     def test_chamber_atomic_should_ignore_errors(self):
         with assert_raises(RuntimeError):
