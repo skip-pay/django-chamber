@@ -21,6 +21,7 @@ class ModelFieldsTestCase(TransactionTestCase):
 
     def setUp(self):
         self.inst = TestFieldsModel()
+        self.inst.save()
         super().setUp()
 
     def test_random_file_path_should_be_generated_from_class_name(self):

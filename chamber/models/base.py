@@ -26,7 +26,7 @@ class SmartQuerySetMixin:
             qs = qs.order_by(*self.query.order_by)
         return qs
 
-    def change_and_save(self, update_only_changed_fields=False, **changed_fields):
+    def change_and_save(self, update_only_changed_fields=True, **changed_fields):
         """
         Changes a given `changed_fields` on each object in the queryset, saves objects
         and returns the changed objects in the queryset.
@@ -334,7 +334,7 @@ class SmartModel(AuditModel, metaclass=SmartModelBase):
         change(self, **changed_fields)
         return self
 
-    def change_and_save(self, update_only_changed_fields=False, **changed_fields):
+    def change_and_save(self, update_only_changed_fields=True, **changed_fields):
         """
         Changes a given `changed_fields` on this object, saves it and returns itself.
         :param update_only_changed_fields: only changed fields will be updated in the database.
