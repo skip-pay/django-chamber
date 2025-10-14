@@ -33,7 +33,7 @@ jobs:
         flake8 --config .config/flake8 chamber
     - name: Run Tests
       run: |
-        coverage run --omit */site-packages/*,*/migrations/*,*/lib/* example/manage.py test test_chamber.tests --settings=dj.settings.settings -v 2
+        coverage run example/manage.py test test_chamber.tests --settings=dj.settings.settings -v 2
     - name: Coveralls
       uses: AndreMiras/coveralls-python-action@develop
       with:

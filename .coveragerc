@@ -1,3 +1,9 @@
 [run]
 source = chamber
 omit = */site-packages/*,*/migrations/*,*/lib/*,*/settings/*
+relative_files = True
+
+[paths]
+source =
+    chamber/
+    */django-chamber/chamber/
