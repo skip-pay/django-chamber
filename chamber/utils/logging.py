@@ -1,6 +1,7 @@
 import json
 import logging
 import platform
+import traceback
 
 from django.http import UnreadablePostError
 
@@ -30,7 +31,20 @@ class AppendExtraJSONHandler(logging.StreamHandler):
             for k, v in record.__dict__.items()
             if k not in self.DEFAULT_STREAM_HANDLER_VARIABLE_KEYS.union(self.CUSTOM_STREAM_HANDLER_VARIABLE_KEYS)
         }
+
+        if record.exc_info:
+            extra['exception'] = {
+                'type': record.exc_info[0].__name__ if record.exc_info[0] else None,
+                'value': str(record.exc_info[1]) if record.exc_info[1] else None,
+                'traceback': traceback.format_exception(*record.exc_info),
+            }
+
+        # exc_info is passed in extras
+        record.exc_info = None
+        record.exc_text = None
+
         record.msg = '{} --- {}'.format(record.msg, json.dumps(extra, cls=ChamberJSONEncoder))
+
         super().emit(record)
 
 

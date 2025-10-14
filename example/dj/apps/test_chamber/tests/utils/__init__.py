@@ -14,6 +14,7 @@ from germanium.tools import assert_equal, assert_true  # pylint: disable=E0401
 
 from .datastructures import *  # NOQA
 from .decorators import *  # NOQA
+from .logging import *  # NOQA
 
 
 class TestClass(object):
