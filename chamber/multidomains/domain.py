@@ -5,8 +5,20 @@ from django.core.exceptions import ImproperlyConfigured
 
 
 class Domain:
-
-    def __init__(self, name, urlconf=None, user_model=None, url=None, protocol=None, hostname=None, port=None):
+    def __init__(
+        self,
+        name: str,
+        urlconf: str | None = None,
+        user_model: str | None = None,
+        url: str | None = None,
+        protocol: str | None = None,
+        hostname: str | None = None,
+        port: int | None = None,
+        user_model_columns: list[str] | None = None,
+    ):
+        """
+        user_model_columns is useful for restriction of SELECT queries of user_model
+        """
         self.name = name
         self.protocol = protocol
         self.hostname = hostname
@@ -15,31 +27,41 @@ class Domain:
 
         if url:
             parsed_url = urlparse(url)
-            self.protocol, self.hostname, self.port = parsed_url.scheme, parsed_url.hostname, parsed_url.port
+            self.protocol, self.hostname, self.port = (
+                parsed_url.scheme,
+                parsed_url.hostname,
+                parsed_url.port,
+            )
 
         if self.protocol is None:
-            raise ImproperlyConfigured('protocol must be set')
+            raise ImproperlyConfigured("protocol must be set")
         if self.hostname is None:
-            raise ImproperlyConfigured('hostname must be set')
+            raise ImproperlyConfigured("hostname must be set")
 
         if self.port is None:
-            if self.protocol == 'http':
+            if self.protocol == "http":
                 self.port = 80
-            elif self.protocol == 'https':
+            elif self.protocol == "https":
                 self.port = 443
             else:
-                raise ImproperlyConfigured('port must be set')
+                raise ImproperlyConfigured("port must be set")
         self.user_model = user_model
+        if user_model_columns is None:
+            user_model_columns = []
+        self.user_model_columns = user_model_columns
 
     @property
     def url(self):
-        return ('{}://{}'.format(self.protocol, self.hostname)
-                if (self.protocol == 'http' and self.port == 80) or (self.protocol == 'https' and self.port == 443)
-                else '{}://{}:{}'.format(self.protocol, self.hostname, self.port))
+        return (
+            "{}://{}".format(self.protocol, self.hostname)
+            if (self.protocol == "http" and self.port == 80)
+            or (self.protocol == "https" and self.port == 443)
+            else "{}://{}:{}".format(self.protocol, self.hostname, self.port)
+        )
 
     @property
     def user_class(self):
-        return apps.get_model(*self.user_model.split('.', 1))
+        return apps.get_model(*self.user_model.split(".", 1))
 
 
 def get_domain(site_id):
@@ -48,7 +70,9 @@ def get_domain(site_id):
     if site_id in settings.DOMAINS:
         return settings.DOMAINS.get(site_id)
     else:
-        raise ImproperlyConfigured('Domain with ID "{}" does not exists'.format(site_id))
+        raise ImproperlyConfigured(
+            'Domain with ID "{}" does not exists'.format(site_id)
+        )
 
 
 def get_current_domain():

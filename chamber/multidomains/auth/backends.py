@@ -1,15 +1,22 @@
 from django.contrib.auth.backends import ModelBackend as OriginModelBackend
 from django.contrib.auth.models import Permission
 
-from chamber.multidomains.domain import get_user_class
+from chamber.multidomains.domain import get_current_domain, get_user_class
 
 
 class GetUserMixin:
 
     def get_user(self, user_id):
-        UserModel = get_user_class()
+        domain = get_current_domain()
+        UserModel = domain.user_class
+        columns = domain.user_model_columns
+
+        qs = UserModel._default_manager
+        if columns:
+            qs = qs.only(*columns)
+
         try:
-            return UserModel._default_manager.get(pk=user_id)
+            return qs.get(pk=user_id)
         except UserModel.DoesNotExist:
             return None
 
