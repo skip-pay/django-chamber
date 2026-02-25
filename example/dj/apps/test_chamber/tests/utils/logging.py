@@ -1,6 +1,7 @@
 import io
 import json
 import logging
+import sys
 
 from django.test import TestCase
 from germanium.tools import assert_equal, assert_true, assert_in  # pylint: disable=E0401
@@ -8,7 +9,12 @@ from germanium.tools import assert_equal, assert_true, assert_in  # pylint: disa
 from chamber.utils.logging import AppendExtraJSONHandler
 
 
+__all__ = ("AppendExtraJSONHandlerTestCase",)
+
+
 class AppendExtraJSONHandlerTestCase(TestCase):
+    DEFAULT_LOGGER_ATTRS = []
+
     def setUp(self):
         self.stream = io.StringIO()
         self.handler = AppendExtraJSONHandler(self.stream)
@@ -16,6 +22,10 @@ class AppendExtraJSONHandlerTestCase(TestCase):
         self.logger.setLevel(logging.DEBUG)
         self.logger.handlers = [self.handler]
         self.logger.propagate = False
+
+        if sys.version_info >= (3, 12):
+            # taskName added in python 3.12
+            self.DEFAULT_LOGGER_ATTRS.append("taskName")
 
     def tearDown(self):
         self.logger.handlers = []
@@ -27,7 +37,8 @@ class AppendExtraJSONHandlerTestCase(TestCase):
         # Format: "message --- {json}"
         if " --- " in log_output:
             json_part = log_output.split(" --- ", 1)[1]
-            return json.loads(json_part)
+            json_dict = json.loads(json_part)
+            return {k: v for (k, v) in json_dict.items() if k not in self.DEFAULT_LOGGER_ATTRS}
         return {}
 
     def test_basic_logging_without_extra(self):
