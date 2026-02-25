@@ -1,8 +1,8 @@
 from copy import copy
 from datetime import datetime, time, timedelta
+from datetime import timezone as tz
 
 from django.utils import timezone
-from django.utils.timezone import utc
 
 
 def range_for_today():
@@ -10,21 +10,21 @@ def range_for_today():
 
 
 def range_for_day(day):
-    return (datetime.combine(day, time.min).replace(tzinfo=utc),
-            datetime.combine(day, time.max).replace(tzinfo=utc))
+    return (datetime.combine(day, time.min).replace(tzinfo=tz.utc),
+            datetime.combine(day, time.max).replace(tzinfo=tz.utc))
 
 
 def range_for_month_by_day(day):
     start = copy(day).replace(day=1)
-    return (datetime.combine(start, time.min).replace(tzinfo=utc),
-            datetime.combine(day, time.max).replace(tzinfo=utc))
+    return (datetime.combine(start, time.min).replace(tzinfo=tz.utc),
+            datetime.combine(day, time.max).replace(tzinfo=tz.utc))
 
 
 def range_for_current_month():
     return range_for_month_by_day(datetime.today())
 
 
-def range_for_last_24_hours(now=datetime.now(tz=utc)):
+def range_for_last_24_hours(now=datetime.now(tz=tz.utc)):
     return (now - timedelta(hours=24), now)
 
 
