@@ -1,3 +1,4 @@
+import copy
 import json
 import logging
 import platform
@@ -39,7 +40,13 @@ class AppendExtraJSONHandler(logging.StreamHandler):
                 'traceback': traceback.format_exception(*record.exc_info),
             }
 
-        # exc_info is passed in extras
+        # The record is shared with every other handler of the logger, and with anything that
+        # inspects it after the handlers are done (the Sentry SDK patches Logger.callHandlers and
+        # reads the record in its finally block). Mutating it there would strip the exception from
+        # those consumers, so the message and exc_info are changed on a copy instead. exc_info is
+        # cleared on the copy because the traceback is already serialized into the extras above and
+        # would otherwise be printed twice.
+        record = copy.copy(record)
         record.exc_info = None
         record.exc_text = None
 

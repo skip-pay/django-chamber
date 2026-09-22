@@ -76,6 +76,28 @@ class AppendExtraJSONHandlerTestCase(TestCase):
         assert_true(len(extra["exception"]["traceback"]) > 0)
         assert_in("ValueError: Test exception", "".join(extra["exception"]["traceback"]))
 
+    def test_record_should_not_be_modified_by_the_handler(self):
+        records = []
+
+        class RecordingHandler(logging.Handler):
+            def emit(self, record):
+                records.append(record)
+
+        # A handler must not modify the record: it is shared with the other handlers of the logger
+        # and with anything inspecting it afterwards, such as the Sentry SDK.
+        self.logger.handlers = [self.handler, RecordingHandler()]
+        try:
+            raise ValueError("Test exception")
+        except ValueError:
+            exc_info = sys.exc_info()
+            self.logger.error("Error occurred", exc_info=True)
+
+        assert_in("ValueError: Test exception", self._get_logged_output())
+
+        record = records[0]
+        assert_equal(record.exc_info, exc_info)
+        assert_equal(record.msg, "Error occurred")
+
     def test_logging_with_exception_and_extra_fields(self):
         try:
             raise RuntimeError("Something went wrong")

@@ -47,3 +47,8 @@ build/config
 # Virtualenv #
 ##############
 ve/
+
+# Packaging #
+##############
+*.egg-info/
+.venv/
