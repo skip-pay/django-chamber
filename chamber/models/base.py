@@ -114,8 +114,8 @@ class SmartModel(AuditModel, metaclass=SmartModelBase):
         return '{} #{}'.format(self._meta.verbose_name, self.pk)
 
     @classmethod
-    def from_db(cls, db, field_names, values):
-        new = super().from_db(db, field_names, values)
+    def from_db(cls, db, field_names, values, **kwargs):
+        new = super().from_db(db, field_names, values, **kwargs)
         new.is_adding = False
         new.is_changing = True
         updating_fields = [
